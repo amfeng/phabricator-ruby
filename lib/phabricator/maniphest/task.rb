@@ -1,4 +1,5 @@
 require_relative '../conduit_client'
+require_relative '../project'
 
 module Phabricator::Maniphest
   class Task
