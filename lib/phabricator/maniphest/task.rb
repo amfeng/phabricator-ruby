@@ -6,12 +6,12 @@ module Phabricator::Maniphest
       # TODO: Make these priority values actually correct, or figure out
       # how to pull these programmatically.
       PRIORITIES = {
-        needs_triage: 100,
-        unbreak_now: 90,
+        unbreak_now: 100,
+        needs_triage: 90,
         high: 80,
-        normal: 70,
-        low: 60,
-        wishlist: 50
+        normal: 50,
+        low: 25,
+        wishlist: 0
       }
 
       PRIORITIES.each do |priority, value|
