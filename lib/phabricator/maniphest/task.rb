@@ -24,11 +24,11 @@ module Phabricator::Maniphest
     attr_reader :id
     attr_accessor :title, :description, :priority
 
-    def self.create(title, description=nil, projects=[], priority=Priority.normal, other={})
+    def self.create(title, description=nil, projects=[], priority='normal', other={})
       response = JSON.parse(client.request(:post, 'maniphest.createtask', {
         title: title,
         description: description,
-        priority: priority,
+        priority: Priority.send(priority),
         projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid }
       }.merge(other)))
 
