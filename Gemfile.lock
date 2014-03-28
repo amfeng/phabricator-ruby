@@ -1,0 +1,39 @@
+PATH
+  remote: .
+  specs:
+    phabricator (0.0.1)
+      rest-client
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ansi (1.4.3)
+    builder (3.2.2)
+    hashie (2.0.5)
+    metaclass (0.0.4)
+    mime-types (2.2)
+    minitest (4.7.5)
+    minitest-reporters (0.14.24)
+      ansi
+      builder
+      minitest (>= 2.12, < 5.0)
+      powerbar
+    mocha (1.0.0)
+      metaclass (~> 0.0.1)
+    powerbar (1.0.11)
+      ansi (~> 1.4.0)
+      hashie (>= 1.1.0)
+    rake (10.2.2)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.3)
+  minitest (< 5.0)
+  minitest-reporters
+  mocha
+  phabricator!
+  rake
