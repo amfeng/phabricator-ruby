@@ -3,20 +3,22 @@ require_relative '../conduit_client'
 module Phabricator::Maniphest
   class Task
     module Priority
-      # TODO: Make these priority values actually correct, or figure out
-      # how to pull these programmatically.
-      PRIORITIES = {
-        unbreak_now: 100,
-        needs_triage: 90,
-        high: 80,
-        normal: 50,
-        low: 25,
-        wishlist: 0
-      }
+      class << self
+        # TODO: Make these priority values actually correct, or figure out
+        # how to pull these programmatically.
+        PRIORITIES = {
+          unbreak_now: 100,
+          needs_triage: 90,
+          high: 80,
+          normal: 50,
+          low: 25,
+          wishlist: 0
+        }
 
-      PRIORITIES.each do |priority, value|
-        define_method(priority) do
-          value
+        PRIORITIES.each do |priority, value|
+          define_method(priority) do
+            value
+          end
         end
       end
     end
