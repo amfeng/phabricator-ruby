@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phabricator (0.0.1)
+    phabricator (0.0.5)
       rest-client
 
 GEM
@@ -23,7 +23,6 @@ GEM
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
-    rake (10.2.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
 
@@ -36,4 +35,3 @@ DEPENDENCIES
   minitest-reporters
   mocha
   phabricator!
-  rake
