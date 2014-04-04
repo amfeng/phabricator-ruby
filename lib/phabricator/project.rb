@@ -17,7 +17,9 @@ module Phabricator
     end
 
     def self.find_by_name(name)
-      populate_all if @@cached_projects.empty?
+      # Re-populate if we couldn't find it in the cache (this applies to
+      # if the cache is empty as well).
+      populate_all unless @@cached_projects[name]
 
       @@cached_projects[name]
     end
