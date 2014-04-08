@@ -1,4 +1,4 @@
-require_relative './conduit_client'
+require 'phabricator/conduit_client'
 
 module Phabricator
   class Project
