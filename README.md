@@ -24,8 +24,8 @@ it will fall back to whatever is in your `~/.arcrc` file.
 ```ruby
 Phabricator.configure do |c|
   c.host = 'secure.phabricator.com'
-  p.user = 'amber'
-  p.cert = '<CERT>'
+  c.user = 'amber'
+  c.cert = '<CERT>'
 end
 ```
 
