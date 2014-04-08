@@ -7,13 +7,16 @@ module Phabricator
     include Singleton
 
     def initialize
-      # Find the .arcrc file for Phabricator credentials.
-      filename = File.expand_path('~/.arcrc')
+      @host = Phabricator.host
+      @credentials = {
+        user: Phabricator.user,
+        cert: Phabricator.cert
+      }
 
-      if File.readable?(filename)
-        @settings = JSON.parse(File.read(filename))['hosts'].first
-      else
-        raise '~/.arcrc does not exist or is not readable.'
+      # The config is incomplete; try to get the credentials off the ~/.arcrc
+      # file instead.
+      if @host.nil? || @credentials.values.any? {|v| v.nil?}
+        get_credentials_from_file
       end
 
       connect
@@ -25,10 +28,10 @@ module Phabricator
       data = {
         client: 'phabricator-ruby',
         clientVersion: Phabricator::VERSION,
-        user: credentials['user'],
-        host: host,
+        user: @credentials[:user],
+        host: @host,
         authToken: token,
-        authSignature: Digest::SHA1.hexdigest("#{token}#{credentials['cert']}")
+        authSignature: Digest::SHA1.hexdigest("#{token}#{@credentials[:cert]}")
       }
 
       response = JSON.parse(post('conduit.connect', data, __conduit__: true))
@@ -48,19 +51,29 @@ module Phabricator
 
     private
 
+    def get_credentials_from_file
+      filename = File.expand_path('~/.arcrc')
+
+      if File.readable?(filename)
+        settings = JSON.parse(File.read(filename))
+        user_settings = settings['hosts'].first
+
+        @host = settings['config']['phabricator.uri']
+        @credentials = {
+          user: user_settings[1]['user'],
+          cert: user_settings[1]['cert']
+        }
+      else
+        raise 'No credentials passed in, and ~/.arcrc does not exist or is \
+          not readable.'
+      end
+    end
+
     def post(method, data, opts={})
-      RestClient.post("#{host}#{method}", {
+      RestClient.post("#{@host}/api/#{method}", {
         params: data.to_json,
         output: 'json'
       }.merge(opts))
-    end
-
-    def host
-      @settings[0]
-    end
-
-    def credentials
-      @settings[1]
     end
   end
 end

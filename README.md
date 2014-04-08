@@ -16,6 +16,19 @@ Or install it yourself as:
 
 ## Usage
 
+### Configuration
+
+You can configure Phabricator to use a specific host, user, and cert. Otherwise,
+it will fall back to whatever is in your `~/.arcrc` file.
+
+```ruby
+Phabricator.configure do |c|
+  c.host = 'secure.phabricator.com'
+  p.user = 'amber'
+  p.cert = '<CERT>'
+end
+```
+
 ### Projects
 
 ```ruby
