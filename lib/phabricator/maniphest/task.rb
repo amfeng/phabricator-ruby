@@ -1,5 +1,6 @@
 require 'phabricator/conduit_client'
 require 'phabricator/project'
+require 'phabricator/user'
 
 module Phabricator::Maniphest
   class Task
@@ -27,12 +28,14 @@ module Phabricator::Maniphest
     attr_reader :id
     attr_accessor :title, :description, :priority
 
-    def self.create(title, description=nil, projects=[], priority='normal', other={})
+    def self.create(title, description=nil, projects=[], priority='normal', owner=nil, ccs=[], other={})
       response = JSON.parse(client.request(:post, 'maniphest.createtask', {
         title: title,
         description: description,
         priority: Priority.send(priority),
-        projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid }
+        projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
+        ownerPHID: owner ? Phabricator::User.find_by_name(owner).phid : nil,
+        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid }
       }.merge(other)))
 
       data = response['result']
