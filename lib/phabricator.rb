@@ -1,5 +1,6 @@
 require 'phabricator/config'
 require 'phabricator/version'
+require 'phabricator/logging'
 
 module Phabricator
   extend Phabricator::Config

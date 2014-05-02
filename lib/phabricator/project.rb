@@ -8,7 +8,7 @@ module Phabricator
     attr_accessor :name
 
     def self.populate_all
-      response = JSON.parse(client.request(:post, 'project.query'))
+      response = client.request(:post, 'project.query')
 
       response['result'].each do |phid, data|
         project = Project.new(data)

@@ -29,14 +29,14 @@ module Phabricator::Maniphest
     attr_accessor :title, :description, :priority
 
     def self.create(title, description=nil, projects=[], priority='normal', owner=nil, ccs=[], other={})
-      response = JSON.parse(client.request(:post, 'maniphest.createtask', {
+      response = client.request(:post, 'maniphest.createtask', {
         title: title,
         description: description,
         priority: Priority.send(priority),
         projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
         ownerPHID: owner ? Phabricator::User.find_by_name(owner).phid : nil,
         ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid }
-      }.merge(other)))
+      }.merge(other))
 
       data = response['result']
 

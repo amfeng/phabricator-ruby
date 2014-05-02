@@ -5,6 +5,7 @@ require 'rest-client'
 module Phabricator
   class ConduitClient
     include Singleton
+    include Logging
 
     def initialize
       @host = Phabricator.host
@@ -34,10 +35,9 @@ module Phabricator
         authSignature: Digest::SHA1.hexdigest("#{token}#{@credentials[:cert]}")
       }
 
-      response = JSON.parse(post('conduit.connect', data, __conduit__: true))
+      response = post('conduit.connect', data, __conduit__: true)
 
-      # TODO: Something something error handling
-
+      log.info("Successful Conduit connection.")
       @conduit = {
         connectionID: response['result']['connectionID'],
         sessionKey: response['result']['sessionKey']
@@ -70,10 +70,19 @@ module Phabricator
     end
 
     def post(method, data, opts={})
-      RestClient.post("#{@host}/api/#{method}", {
+      log.debug("Making a `#{method}` request with data: #{data.inspect}.")
+      response = JSON.parse(RestClient.post("#{@host}/api/#{method}", {
         params: data.to_json,
         output: 'json'
-      }.merge(opts))
+      }.merge(opts)))
+
+      if response['result']
+        response
+      else
+        log.error("Conduit response: #{response.inspect}")
+        raise "Conduit connection error: #{response['error_code']} info: \
+          #{response['error_info']}"
+      end
     end
   end
 end
