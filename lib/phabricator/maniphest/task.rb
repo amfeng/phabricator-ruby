@@ -65,10 +65,11 @@ module Phabricator::Maniphest
         projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
         ownerPHIDs: owners.map {|o| Phabricator::User.find_by_name(o).phid },
         authorPHIDs: authors.map {|a| Phabricator::User.find_by_name(a).phid },
-        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid }
+        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid },
+        status: status,
         order: order,
         limit: limit,
-        offset: offset,
+        offset: offset
       }
 
       data = response['result']
