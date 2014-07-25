@@ -45,6 +45,39 @@ module Phabricator::Maniphest
       self.new(data)
     end
 
+    def self.retrieve(id)
+      response = client.request(:post, 'maniphest.createtask', {
+        task_id: id,
+      })
+
+      data = response['result']
+
+      # TODO: Error handling
+
+      self.new(data)
+    end
+
+    def self.query(ids=[], phids=[], owners=[], authors=[], projects=[], ccs=[], 
+                   full_text=[], status=nil, order=nil, limit=nil, offset=nil)
+      response = client.request(:post, 'maniphest.query', {
+        phids: phids,
+        ids: ids,
+        projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
+        ownerPHIDs: owners.map {|o| Phabricator::User.find_by_name(o).phid },
+        authorPHIDs: authors.map {|a| Phabricator::User.find_by_name(a).phid },
+        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid }
+        order: order,
+        limit: limit,
+        offset: offset,
+      }
+
+      data = response['result']
+
+      puts data
+
+      self.new(data)
+    end
+
     def initialize(attributes)
       @id = attributes['id']
       @title = attributes['title']

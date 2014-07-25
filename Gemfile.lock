@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phabricator (0.0.5)
+    phabricator (0.0.7)
       rest-client
 
 GEM
@@ -11,7 +11,7 @@ GEM
     builder (3.2.2)
     hashie (2.0.5)
     metaclass (0.0.4)
-    mime-types (2.2)
+    mime-types (2.3)
     minitest (4.7.5)
     minitest-reporters (0.14.24)
       ansi
@@ -20,11 +20,13 @@ GEM
       powerbar
     mocha (1.0.0)
       metaclass (~> 0.0.1)
+    netrc (0.7.7)
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
 
 PLATFORMS
   ruby
