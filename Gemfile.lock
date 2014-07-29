@@ -9,7 +9,7 @@ GEM
   specs:
     ansi (1.4.3)
     builder (3.2.2)
-    hashie (2.0.5)
+    hashie (3.2.0)
     metaclass (0.0.4)
     mime-types (2.3)
     minitest (4.7.5)
@@ -18,7 +18,7 @@ GEM
       builder
       minitest (>= 2.12, < 5.0)
       powerbar
-    mocha (1.0.0)
+    mocha (1.1.0)
       metaclass (~> 0.0.1)
     netrc (0.7.7)
     powerbar (1.0.11)

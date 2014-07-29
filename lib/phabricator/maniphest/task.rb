@@ -26,7 +26,7 @@ module Phabricator::Maniphest
     end
 
     attr_reader :id
-    attr_accessor :title, :description, :priority
+    attr_accessor :title, :description, :priority, :projects, :status, :created, :author, :ccs, :depends_on
 
     def self.create(title, description=nil, projects=[], priority='normal', owner=nil, ccs=[], other={})
       response = client.request(:post, 'maniphest.createtask', {
@@ -46,8 +46,8 @@ module Phabricator::Maniphest
     end
 
     def self.retrieve(id)
-      response = client.request(:post, 'maniphest.createtask', {
-        task_id: id,
+      response = client.request(:post, 'maniphest.info', {
+        task_id: id.to_i,
       })
 
       data = response['result']
@@ -57,26 +57,51 @@ module Phabricator::Maniphest
       self.new(data)
     end
 
-    def self.query(ids=[], phids=[], owners=[], authors=[], projects=[], ccs=[], 
-                   full_text=[], status=nil, order=nil, limit=nil, offset=nil)
+    def self.query(options = {})
+      options = {
+        status: nil,
+        order: 'order-created',
+        limit: 20,
+        offset: 0,
+        phids: nil
+      }.merge(options)
+
       response = client.request(:post, 'maniphest.query', {
-        phids: phids,
-        ids: ids,
-        projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
-        ownerPHIDs: owners.map {|o| Phabricator::User.find_by_name(o).phid },
-        authorPHIDs: authors.map {|a| Phabricator::User.find_by_name(a).phid },
-        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid },
-        status: status,
-        order: order,
-        limit: limit,
-        offset: offset
-      }
+        status: options[:status],
+        order: options[:order],
+        limit: options[:limit],
+        offset: options[:offset],
+        phids: options[:phids],
+      })
 
       data = response['result']
 
-      puts data
+      tasks = []
 
-      self.new(data)
+      data.each do |k, v|
+        if not %w{error_code error_info}.include?(k)
+          tasks << self.new(v)
+        end
+      end
+      
+      tasks
+    end
+
+    def self.statuses
+      response = client.request(:post, 'maniphest.querystatuses', {
+      })
+      response['result']
+    end
+
+    def transactions
+      if @transactions_.nil?
+        client = Phabricator::ConduitClient.instance
+        response = client.request(:post, 'maniphest.gettasktransactions', {
+          ids: [@id],
+        })
+        @transactions_ = response['result'][@id]
+      end
+      @transactions_
     end
 
     def initialize(attributes)
@@ -84,6 +109,15 @@ module Phabricator::Maniphest
       @title = attributes['title']
       @description = attributes['description']
       @priority = attributes['priority']
+      @status = attributes['status']
+      @projects = attributes['projectPHIDs']
+      @projects = attributes['projectPHIDs']
+      @ccs = attributes['ccPHIDs']
+      @depends_on = attributes['dependsOnTaskPHIDs']
+
+      @author = Phabricator::User.find_by_id(attributes['authorPHID'])
+      @created = Time.at(attributes['dateCreated'].to_i).utc
+      @transactions_ = nil
     end
 
     private
