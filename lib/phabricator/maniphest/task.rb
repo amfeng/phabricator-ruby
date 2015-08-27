@@ -52,6 +52,17 @@ module Phabricator::Maniphest
       @priority = attributes['priority']
     end
 
+    def update(attributes)
+     response = self.class.client.request(:post, 'maniphest.update',
+       {id: @id}.merge(attributes))
+     data = response['result']
+     self.class.new(data) 
+    end
+
+    def get_url()
+      "https://phab.stripe.com/T" + @id
+    end
+
     private
 
     def self.client

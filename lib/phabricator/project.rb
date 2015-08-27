@@ -10,7 +10,7 @@ module Phabricator
     def self.populate_all
       response = client.request(:post, 'project.query')
 
-      response['result'].each do |phid, data|
+      response['result']['data'].each do |phid, data|
         project = Project.new(data)
         @@cached_projects[project.name] = project
       end
