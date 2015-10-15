@@ -18,11 +18,9 @@ module Phabricator
     end
 
     def self.find_by_name(name)
-      # Re-populate if we couldn't find it in the cache (this applies to
-      # if the cache is empty as well).
-      populate_all unless @@cached_users[name]
+      populate_all if @@cached_users.empty?
 
-      @@cached_users[name]
+      @@cached_users[name] || refresh_cache_for_user(name)
     end
 
     def initialize(attributes)
@@ -31,6 +29,16 @@ module Phabricator
     end
 
     private
+
+    def self.refresh_cache_for_user(name)
+      response = client.request(:post, 'user.query', { usernames: [ name ] })
+      response['result'].each do |data|
+        user = User.new(data)
+        @@cached_users[user.name] = user
+      end
+
+      @@cached_users[user.name]
+    end
 
     def self.client
       @client ||= Phabricator::ConduitClient.instance
