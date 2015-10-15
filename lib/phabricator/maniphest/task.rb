@@ -33,9 +33,9 @@ module Phabricator::Maniphest
         title: title,
         description: description,
         priority: Priority.send(priority),
-        projectPHIDs: projects.map {|p| Phabricator::Project.find_by_name(p).phid },
-        ownerPHID: owner ? Phabricator::User.find_by_name(owner).phid : nil,
-        ccPHIDs: ccs.map {|c| Phabricator::User.find_by_name(c).phid }
+        projectPHIDs: projects.compact.map { |p| ::Phabricator.lookup_project(p).phid },
+        ownerPHID: owner ? ::Phabricator.lookup_user(owner).phid : nil,
+        ccPHIDs: ccs.compact.map { |c| ::Phabricator.lookup_user(c).phid }
       }.merge(other))
 
       data = response['result']
