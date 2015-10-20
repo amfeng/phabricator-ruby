@@ -1,20 +1,15 @@
 require 'phabricator/conduit_client'
 
 module Phabricator
-  class User
+  class User < PhabObject
     @@cached_users = {}
 
-    attr_reader :phid
     attr_accessor :name
 
     def self.populate_all
-      response = client.request(:post, 'user.query')
-
-      response['result'].each do |data|
-        user = User.new(data)
+      query.each do |user|
         @@cached_users[user.name] = user
       end
-
     end
 
     def self.find_by_name(name)
@@ -24,24 +19,16 @@ module Phabricator
     end
 
     def initialize(attributes)
-      @phid = attributes['phid']
       @name = attributes['userName']
     end
 
     private
 
     def self.refresh_cache_for_user(name)
-      response = client.request(:post, 'user.query', { usernames: [ name ] })
-      response['result'].each do |data|
-        user = User.new(data)
+      query(usernames: [name]).each do |user|
         @@cached_users[user.name] = user
       end
-
-      @@cached_users[user.name]
-    end
-
-    def self.client
-      @client ||= Phabricator::ConduitClient.instance
+      @@cached_users[name]
     end
   end
 end

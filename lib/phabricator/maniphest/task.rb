@@ -3,7 +3,7 @@ require 'phabricator/project'
 require 'phabricator/user'
 
 module Phabricator::Maniphest
-  class Task
+  class Task < Phabricator::PhabObject
     module Priority
       class << self
         # TODO: Make these priority values actually correct, or figure out
@@ -28,6 +28,11 @@ module Phabricator::Maniphest
     attr_reader :id
     attr_accessor :title, :description, :priority
 
+    # @override PhabObject
+    def self.api_name
+      'maniphest'
+    end
+
     def self.create(title, description=nil, projects=[], priority='normal', owner=nil, ccs=[], other={})
       response = client.request(:post, 'maniphest.createtask', {
         title: title,
@@ -46,6 +51,7 @@ module Phabricator::Maniphest
     end
 
     def initialize(attributes)
+      super
       @id = attributes['id']
       @title = attributes['title']
       @description = attributes['description']
@@ -61,12 +67,6 @@ module Phabricator::Maniphest
 
     def get_url()
       "https://phab.stripe.com/T" + @id
-    end
-
-    private
-
-    def self.client
-      @client ||= Phabricator::ConduitClient.instance
     end
   end
 end
