@@ -50,4 +50,4 @@ Phabricator::Maniphest::Task.create('title', 'description', ['Project'], 'normal
 
 Patches welcome! (:
 
-For a list of Conduit methods available, see http://secure.phabricator.com/conduit.
+For a list of Conduit methods available, see http://secure.phabricator.com/conduit/.
