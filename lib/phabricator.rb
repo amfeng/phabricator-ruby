@@ -17,4 +17,5 @@ module Phabricator
 end
 
 require 'phabricator/conduit_client'
+require 'phabricator/phab_object'
 require 'phabricator/maniphest'
