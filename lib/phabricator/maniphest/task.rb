@@ -22,51 +22,38 @@ module Phabricator::Maniphest
             value
           end
         end
+
+        def raw_value_from_name(name)
+          PRIORITIES.fetch(name.to_sym)
+        end
+
+        def name_from_raw_value(raw_value)
+          PRIORITIES.invert.fetch(raw_value).to_s
+        end
       end
     end
-
-    attr_reader :id
-    attr_accessor :title, :description, :priority
 
     # @override PhabObject
     def self.api_name
       'maniphest'
     end
 
-    def self.create(title, description=nil, projects=[], priority='normal', owner=nil, ccs=[], other={})
-      response = client.request(:post, 'maniphest.createtask', {
-        title: title,
-        description: description,
-        priority: Priority.send(priority),
-        projectPHIDs: projects.compact.map { |p| ::Phabricator.lookup_project(p).phid },
-        ownerPHID: owner.nil? ? nil : ::Phabricator.lookup_user(owner).phid,
-        ccPHIDs: ccs.compact.map { |c| ::Phabricator.lookup_user(c).phid }
-      }.merge(other))
-
-      data = response['result']
-
-      # TODO: Error handling
-
-      self.new(data)
+    def self.create_verb
+      'createtask'
     end
 
-    def initialize(attributes)
-      super
-      @id = attributes['id']
-      @title = attributes['title']
-      @description = attributes['description']
-      @priority = attributes['priority']
-    end
+    prop :id
+    prop :title
+    prop :description
+    prop :priority
 
-    def update(attributes)
-     response = self.class.client.request(:post, 'maniphest.update',
-       {id: @id}.merge(attributes))
-     data = response['result']
-     self.class.new(data) 
-    end
+    prop :priority, class: Priority, name_prop: :priorityName
+    prop :projectPHIDs, class: Phabricator::Project, name_prop: :projectNames
+    prop :ccPHIDs, class: Phabricator::User, name_prop: :ccNames
+    prop :ownerPHID, class: Phabricator::User, name_prop: :ownerName, query_prop: :ownerPHIDs, query_name_prop: :ownerNames
 
-    def get_url()
-      "https://phab.stripe.com/T" + @id
+    def get_url
+      "https://phab.stripe.com/T#{id}"
     end
   end
 end

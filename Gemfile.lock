@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phabricator (0.0.5)
+    phabricator (0.0.8)
       rest-client
 
 GEM
@@ -9,9 +9,13 @@ GEM
   specs:
     ansi (1.4.3)
     builder (3.2.2)
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
     hashie (2.0.5)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     metaclass (0.0.4)
-    mime-types (2.2)
+    mime-types (2.6.2)
     minitest (4.7.5)
     minitest-reporters (0.14.24)
       ansi
@@ -20,11 +24,18 @@ GEM
       powerbar
     mocha (1.0.0)
       metaclass (~> 0.0.1)
+    netrc (0.10.3)
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
+    rake (10.4.2)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
 
 PLATFORMS
   ruby
@@ -35,3 +46,7 @@ DEPENDENCIES
   minitest-reporters
   mocha
   phabricator!
+  rake
+
+BUNDLED WITH
+   1.10.6

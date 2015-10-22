@@ -4,8 +4,8 @@ module Phabricator
   class Project < PhabObject
     @@cached_projects = {}
 
-    attr_reader :id
-    attr_accessor :name
+    prop :id
+    prop :name
 
     def self.populate_all
       query.each do |project|
@@ -19,10 +19,13 @@ module Phabricator
       @@cached_projects[name] || refresh_cache_for_project(name)
     end
 
-    def initialize(attributes)
-      super
-      @id = attributes['id']
-      @name = attributes['name']
+    def self.raw_value_from_name(name)
+      find_by_name(name).phid
+    end
+
+    def self.name_from_raw_value(raw_value)
+      # TODO: implement me
+      raise NotImplementedError
     end
 
     private
