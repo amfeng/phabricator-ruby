@@ -22,6 +22,14 @@ module Phabricator
       @@cached_projects[name] || refresh_cache_for_project(name)
     end
 
+    def self.find_by_id(id)
+      # Re-populate if we couldn't find it in the cache (this applies to
+      # if the cache is empty as well).
+      populate_all unless @@cached_projects.find{|k,p| p.phid == id}
+      _, v = @@cached_projects.find{|k,p| p.phid == id}
+      v
+    end
+
     def initialize(attributes)
       @id = attributes['id']
       @phid = attributes['phid']

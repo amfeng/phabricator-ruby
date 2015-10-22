@@ -3,6 +3,7 @@ require 'phabricator/conduit_client'
 module Phabricator
   class User
     @@cached_users = {}
+    @@cached_projects_id = {}
 
     attr_reader :phid
     attr_accessor :name
@@ -21,6 +22,14 @@ module Phabricator
       populate_all if @@cached_users.empty?
 
       @@cached_users[name] || refresh_cache_for_user(name)
+    end
+
+    def self.find_by_id(id)
+      # Re-populate if we couldn't find it in the cache (this applies to
+      # if the cache is empty as well).
+      populate_all unless @@cached_users.find{|n,a| a.phid == id}
+      _, v = @@cached_users.find{|n,a| a.phid == id}
+      v
     end
 
     def initialize(attributes)
