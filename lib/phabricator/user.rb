@@ -4,7 +4,7 @@ module Phabricator
   class User < PhabObject
     @@cached_users = {}
 
-    attr_accessor :name
+    attr_accessor :phid, :name, :attrs
 
     def self.populate_all
       query.each do |user|
@@ -19,7 +19,9 @@ module Phabricator
     end
 
     def initialize(attributes)
+      @phid = attributes['phid']
       @name = attributes['userName']
+      @attrs = attributes
     end
 
     private
