@@ -1,4 +1,4 @@
-# Phabricator
+# phabricator-ruby [![Build Status](https://travis-ci.org/amfeng/phabricator-ruby.svg?branch=master)](https://travis-ci.org/amfeng/phabricator-ruby)
 
 ## Installation
 
