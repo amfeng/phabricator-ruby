@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'mocha/setup'
+require 'phabricator'
 
 module PhabricatorTests
   class Test < ::MiniTest::Spec

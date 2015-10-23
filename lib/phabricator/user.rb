@@ -4,7 +4,12 @@ module Phabricator
   class User < PhabObject
     @@cached_users = {}
 
-    attr_accessor :phid, :name, :attrs
+    prop :userName
+
+    # alias for backwards compatibility
+    def name
+      userName
+    end
 
     def self.populate_all
       query.each do |user|
@@ -18,10 +23,13 @@ module Phabricator
       @@cached_users[name] || refresh_cache_for_user(name)
     end
 
-    def initialize(attributes)
-      @phid = attributes['phid']
-      @name = attributes['userName']
-      @attrs = attributes
+    def self.raw_value_from_name(name)
+      find_by_name(name).phid
+    end
+
+    def self.name_from_raw_value(raw_value)
+      # TODO: implement me
+      raise NotImplementedError
     end
 
     private
