@@ -7,6 +7,8 @@ module Phabricator
     include Singleton
     include Logging
 
+    attr_reader :host
+
     def initialize
       @host = Phabricator.host
       @credentials = {
