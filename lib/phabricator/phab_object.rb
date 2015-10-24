@@ -44,20 +44,10 @@ module Phabricator
     end
 
     def initialize(attributes)
-      @attrs = {}
-      keys = Set.new(attributes.keys.map(&:to_sym))
-      if keys.length != attributes.length
+      # Convert all keys to symbols
+      @attrs = Hash[attributes.map {|(k,v)| [k.to_sym, v]}]
+      if @attrs.length != attributes.length
         raise ArgumentError.new("attributes must not contain string and symbol keys of the same value")
-      end
-
-      self.class.props.each do |prop_sym, prop_opts|
-        next unless keys.include?(prop_sym)
-        keys.delete(prop_sym)
-        @attrs[prop_sym] = attributes[prop_sym] || attributes[prop_sym.to_s]
-      end
-
-      unless keys.empty?
-        raise ArgumentError.new("#{self.class}: Unrecognized properties: #{keys.to_a.join(", ")}")
       end
     end
 

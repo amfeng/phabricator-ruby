@@ -5,6 +5,14 @@ module PhabricatorTests::Unit
     include Phabricator
     include Phabricator::Maniphest
 
+    it 'allows undeclared properties' do
+      task = Task.new(foo: 'bar')
+      assert_equal('bar', task.attrs[:foo])
+      assert_raises(NoMethodError) do
+        task.bar
+      end
+    end
+
     it 'accesses raw props and name_props' do
       task = Task.new(
         title: 'foo',
