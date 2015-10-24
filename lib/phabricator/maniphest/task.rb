@@ -53,7 +53,7 @@ module Phabricator::Maniphest
     prop :ownerPHID, class: Phabricator::User, name_prop: :ownerName, query_prop: :ownerPHIDs, query_name_prop: :ownerNames
 
     def get_url
-      "https://phab.stripe.com/T#{id}"
+      "#{self.class.client.host}/T#{id}"
     end
   end
 end
