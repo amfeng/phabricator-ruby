@@ -101,7 +101,7 @@ module Phabricator
       end
       attributes[:id] = id
 
-      response = self.class.client.request(:post, "#{api_name}.update", attributes)
+      response = self.class.client.request(:post, "#{self.class.api_name}.update", attributes)
       data = response['result']
 
       # TODO: Error handling

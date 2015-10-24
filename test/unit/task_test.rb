@@ -50,6 +50,38 @@ module PhabricatorTests::Unit
       )
     end
 
+    it 'updates with raw props and name_props' do
+      Project.expects(:raw_value_from_name).with('project1').returns('pphid')
+      User.expects(:raw_value_from_name).with('owner1').returns('ophid')
+
+      Project.client.expects(:request).with(
+        :post,
+        "maniphest.update",
+        {
+          id: 'id1',
+          priority: 80,
+          projectPHIDs: ['pphid'],
+          ownerPHID: 'ophid',
+          ccPHIDs: ['ccphid'],
+        }
+      ).returns('result' => {})
+
+      task = Task.new(
+        id: 'id1',
+        title: 'foo',
+        description: 'bar',
+        priority: 50,
+        projectPHIDs: ['phid0']
+      )
+
+      task.update(
+        priorityName: 'high',
+        projectNames: ['project1'],
+        ownerName: 'owner1',
+        ccPHIDs: ['ccphid'],
+      )
+    end
+
     it 'queries with raw props and name_props' do
       Project.expects(:raw_value_from_name).with('project1').returns('pphid')
       User.expects(:raw_value_from_name).with('owner1').returns('ophid')
