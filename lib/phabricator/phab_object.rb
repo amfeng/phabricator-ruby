@@ -59,6 +59,14 @@ module Phabricator
       'create'
     end
 
+    def self.update_verb
+      'update'
+    end
+
+    def self.query_verb
+      'query'
+    end
+
     def self.translate_name_props(attributes, is_query:)
       attributes = attributes.dup
       translatable_props.each do |prop, prop_opts|
@@ -101,7 +109,7 @@ module Phabricator
       end
       attributes[:id] = id
 
-      response = self.class.client.request(:post, "#{self.class.api_name}.update", attributes)
+      response = self.class.client.request(:post, "#{self.class.api_name}.#{self.class.update_verb}", attributes)
       data = response['result']
 
       # TODO: Error handling
@@ -111,7 +119,7 @@ module Phabricator
 
     def self.query(attributes={})
       attributes = translate_name_props(attributes, is_query: true)
-      response = client.request(:post, "#{api_name}.query", attributes)
+      response = client.request(:post, "#{api_name}.#{query_verb}", attributes)
       items = response['result']
 
       # Phab is horrible; some endpoints put use a 'data' subhash, some don't
