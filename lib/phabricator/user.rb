@@ -24,7 +24,9 @@ module Phabricator
     end
 
     def self.raw_value_from_name(name)
-      find_by_name(name).phid
+      user = find_by_name(name)
+      return nil if user.nil?
+      return user.phid
     end
 
     def self.name_from_raw_value(raw_value)
