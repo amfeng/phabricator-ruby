@@ -20,7 +20,9 @@ module Phabricator
     end
 
     def self.raw_value_from_name(name)
-      find_by_name(name).phid
+      project = find_by_name(name)
+      return nil if project.nil?
+      return project.phid
     end
 
     def self.name_from_raw_value(raw_value)
