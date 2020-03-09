@@ -83,7 +83,8 @@ module Phabricator
       log.debug("Making a `#{method}` request with data: #{data.inspect}.")
       response = JSON.parse(RestClient.post("#{@host}/api/#{method}", {
         params: data.to_json,
-        output: 'json'
+        output: 'json',
+        max_redirects: 0
       }.merge(opts)))
 
       if response['result']
