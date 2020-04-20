@@ -81,10 +81,20 @@ module Phabricator
 
     def post(method, data, opts={})
       log.debug("Making a `#{method}` request with data: #{data.inspect}.")
-      response = JSON.parse(RestClient.post("#{@host}/api/#{method}", {
-        params: data.to_json,
-        output: 'json'
-      }.merge(opts)))
+      response = RestClient.post("#{@host}/api/#{method}", {
+                    params: data.to_json,
+                    output: 'json',
+                    max_redirects: 0
+                  }.merge(opts)) do |res|
+                    case res.code
+                    when 300, 301, 302, 303, 307, 308
+                      log.error("Conduit response: #{res.inspect}, response code: #{res.code}")
+                      raise Errors::ClientError.new(res.code), 'Conduit connection error: the host used in the url is used to redirect the request'
+                    else
+                      res.return!
+                    end
+                  end
+      response = JSON.parse(response)
 
       if response['result']
         response
